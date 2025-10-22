@@ -1,5 +1,5 @@
 echo "Starting Docker container..."
-cd ~/bios611/hw4_ufo/
+cd ~/bios611/hw5_cluster
 
 docker build . --platform=linux/amd64 -t r-cluster-analysis
 docker run\
