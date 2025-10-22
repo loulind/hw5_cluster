@@ -6,5 +6,11 @@ clean:
 	rm -rf <directory name>
 	rm <indiv file name>
 
-<derived data>: <r script that tidy's data>
+# TASK 1 artefacts and dependencies
+<t1_derived_data>: <r script that tidy's data>
+	<shell commands>
+
+	
+# TASK 2 artefacts and dependencies
+<t2_derived_data>: <r script that tidy's data>
 	<shell commands>
