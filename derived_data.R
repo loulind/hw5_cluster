@@ -1,24 +1,30 @@
+library(tidyverse)
+
 # This script creates the data for Lou's HW5 assignment
 set.seed(123)
 generate_hypercube_clusters <- function(n, k, side_length, noise_sd = 1.0){
-  cluster_df <- data.frame()
-  # want df with vars n, side_length, v1, ..., vn
-  # create positive basis vectors, scaled by side_length
-  # 
-  
+  scaled_basis_vecs <- side_length*diag(n)
+  noisy_matrix <- rnorm(n*n, mean=0, sd=1) |> matrix(nrow=n, ncol=n)
+  scaled_noisy_matrix <- scaled_basis_vecs + noisy_matrix
+  cluster_matrix <- cbind(scaled_noisy_matrix, rep(side_length, n))
+  cluster_df <- as.data.frame(cluster_matrix)
   return(cluster_df)
 }
 
-
 # Generating data sets and concatenating them by dimension
-for (i in 1:6) {
-  intermediate_df <- data.frame()  # resets dataframe
+for (i in 2:6) {
+  intmd_df <- data.frame()  # resets intermediate df
   for (j in 1:10) {
-    intermediate_df <- generate_hypercube_clusters(i, 100, j) |> rbind(df)
+    intmd_df <- generate_hypercube_clusters(i, 100, j) |> rbind(intmd_df)
   }
   df_name_str <- paste0("df_n", i)
-  assign(df_name_str, intermediate_df)  # creates new dataframe for n=i
+  assign(df_name_str, intmd_df)  # creates new dataframe for each dimension
 }
 
+
 # Export the data frame to CSV
-folder_path <- "~/work/task1data/n6l10.csv"
+write.csv(df_n2, "~/work/task1data/df_n2")
+write.csv(df_n3, "~/work/task1data/df_n3")
+write.csv(df_n4, "~/work/task1data/df_n4")
+write.csv(df_n5, "~/work/task1data/df_n5")
+write.csv(df_n6, "~/work/task1data/df_n6")
