@@ -1,8 +1,8 @@
 # Wont commit artefacts to repo
-./task1data
-./task2data
-./task1figures
-./task2figures
+task1data
+task2data
+task1figures
+task2figures
 
 # GITHUB REPO FOR R GITIGNORE
 # History files
