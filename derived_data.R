@@ -1,6 +1,6 @@
+# This script creates the data for TASK 1: K-Means Clustering
 library(tidyverse)
 
-# This script creates the data for Lou's HW5 assignment
 set.seed(123)
 generate_hypercube_clusters <- function(n, k, side_length, noise_sd = 1.0){
   scaled_basis_vecs <- side_length*diag(n)
