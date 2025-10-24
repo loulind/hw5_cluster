@@ -7,7 +7,7 @@ T2DATA =
 T2FIGURES = 
 
 # Allows reference to files that might not be there currently
-.PHONY: clean
+.PHONY: all clean
 
 # Generates all artefacts after cleaning
 all: $(T1DATA) $(T2DATA) $(T1FIGURES) $(T2FIGURES)
