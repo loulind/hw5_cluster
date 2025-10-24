@@ -22,7 +22,7 @@ for (i in 1:5) {
     gap_stats_df <- c(i+1,j,optimal_k) |> rbind(gap_stats_df)
   }
 }
-gap_stats_df <- rename(gap_stats_df, n=X1L, side_length=X10L, opt_clstr=X2L)
+colnames(gap_stats_df) <- c("n", "side_length", "opt_clstr")
 
 # Visualizing clusters
 pred_clstr_cnts <- ggplot(gap_stats_df, 
