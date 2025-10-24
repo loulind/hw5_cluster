@@ -1,6 +1,7 @@
 # This script creates the data for TASK 1: K-Means Clustering
 library(tidyverse)
 
+# Function that generates noisy positive corners of n-dimensional cube
 generate_hypercube_clusters <- function(n, side_length, k, noise_sd = 1.0){
   scaled_basis_vecs <- side_length*diag(n)
   noisy_matrix <- rnorm(n*n, mean=0, sd=1) |> matrix(nrow=n, ncol=n)
@@ -22,7 +23,6 @@ for (i in 2:6) {
   assign(df_name_str, intmd_df)  # creates new dataframe for each dimension
 }
 
-view(df_n6)
 # Export the data frame to CSV
 write.csv(df_n2, "~/work/task1data/df_n2", row.names = FALSE)
 write.csv(df_n3, "~/work/task1data/df_n3", row.names = FALSE)
