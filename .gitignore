@@ -3,6 +3,7 @@ task1data
 task2data
 task1figures
 task2figures
+.DS_Store
 
 # GITHUB REPO FOR R GITIGNORE
 # History files
