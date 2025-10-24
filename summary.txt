@@ -1,1 +1,16 @@
-TASK 1:
+***TASK 1*** See ~/work/task1figures/pred_clstr_cnts.png
+
+Here are the side lengths for which clusGap is consistently unable to 
+distinguish clusters...
+
+n=2: clusGap is consistent all the way up until side_length equals 1.
+n=3 through n=5: clusGap is unable to distinguish clusters less than ~3
+n=6: clusGap is unable to distinguish clusters below a side_length less than ~4
+
+These estimates change from sample to sample, but remain approximately the same,
+with clusGap being better able to distinguish clusters as n decreases and 
+as side_length increases
+
+
+
+***TASK 2*** 
