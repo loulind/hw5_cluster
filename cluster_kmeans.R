@@ -22,4 +22,19 @@ for (i in 1:5) {
     gap_stats_df <- c(i+1,j,optimal_k) |> rbind(gap_stats_df)
   }
 }
-view(gap_stats_df)
+gap_stats_df <- rename(gap_stats_df, n=X1L, side_length=X10L, opt_clstr=X2L)
+
+# Visualizing clusters
+ggplot(gap_stats_df, aes(x = side_length, y = opt_clstr, color = as.factor(n))) +
+  geom_line(size = 1.2) +
+  geom_point(size = 2) +
+  geom_hline(aes(yintercept = n), linetype = "dashed", color = "black") +
+  scale_x_reverse(breaks = unique(gap_stats_df$side_length)) +  # larger distances on left
+  scale_y_continuous(breaks = seq(0, max(gap_stats_df$n), 1)) +
+  labs(
+    title = "Estimated Clusters vs. Side Length",
+    x = "Side Length",
+    y = "Estimated Number of Clusters",
+    color = "Dimension (n)"
+  ) +
+  theme_minimal(base_size = 14)
