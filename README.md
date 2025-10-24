@@ -1,7 +1,7 @@
 **This is the README to Lou's BIOS 611 Clustering HW**
 
 1. Clone repository
-2. give execute commands to start.sh with ```{zsh} chmod +x start.sh```
+2. give execute commands to start.sh with ```chmod +x start.sh```
 3. start container with command ```./start.sh```
 4. Go to ```http://localhost:8787``` in your browser. USER: rstudio, PW: 123
 5. In terminal, use command ```setwd("~/work")``` to set work file as pwd
