@@ -6,11 +6,12 @@ generate_shell_clusters <- function(n_shells, k_per_shell,
                                     max_radius, noise_sd = 0.1) {
   df_spherical <- data.frame()
   for (i in 1:n_shells) {
-    for (j in 1:k_per_shell) { # df of random values for (rho,theta,phi)
-      obs <- c((n_shells + 1 - i),  # shell number
-               (max_radius / i) + rnorm(1, mean=0, sd=noise_sd), # rand radius
-               2*pi*runif(1),  # random theta
-               pi*runif(1) # random phi
+    k <- k_per_shell*(i^2) # increases number of points per shell
+    for (j in 1:k)  { # df of random values in spherical coordinates
+      obs <- c(i,  # shell number
+               (i*(max_radius/n_shells) + rnorm(1, sd=noise_sd)), # fuzzy radii
+               2*pi*runif(1),  # uniformly distributed theta
+               pi*runif(1) # uniformly distributed phi
                )
       df_spherical <- rbind(df_spherical, obs) # Each row is a vector
     }
@@ -20,7 +21,6 @@ generate_shell_clusters <- function(n_shells, k_per_shell,
     z <- (rho * cos(theta))
     y <- (rho * sin(theta) * sin(phi))
     x <- (rho * sin(theta) * cos(phi))
-
 
   }) |> dplyr::select(-rho, -theta, -phi)
   return(df_cartesian)
@@ -40,11 +40,12 @@ scatter_3d <- plot_ly(
   y = ~y,
   z = ~z,
   color = ~factor(shell),
-  colors = c("red", "green", "blue", "purple"),
+  colors = c("#D81B60", "#1E88E5", "#FFC107", "#004D40"), # colorblind-friendly palette
   type = "scatter3d",
   mode = "markers",
-  marker = list(size = 2, opacity = 0.8)
+  marker = list(size = 1, opacity = 0.8)
 )
+scatter_3d
 
 # Output data
 for (i in seq_along(list_of_sphere_dfs)){
