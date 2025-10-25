@@ -14,10 +14,12 @@ clean:
 	rm -rf task2figures/*
 
 # TASK 1 targets
+# data
 task1data/df_n2 task1data/df_n3 task1data/df_n4\
  task1data/df_n5 task1data/df_n6: derived_data.R
 	Rscript derived_data.R
 
+# figures
 task1figures/pred_clstr_cnts:\
  task1data/df_n2\
  task1data/df_n3\
@@ -28,8 +30,20 @@ task1figures/pred_clstr_cnts:\
 
 
 # TASK 2 targets
-task2data/t2_data.csv task2figures/scatter_3d.png: derived_data2.R
+# data
+task2data/df_maxradius0.csv\
+ task2data/df_maxradius1.csv\
+ task2data/df_maxradius2.csv\
+ task2data/df_maxradius3.csv\
+ task2data/df_maxradius4.csv\
+ task2data/df_maxradius5.csv\
+ task2data/df_maxradius6.csv\
+ task2data/df_maxradius7.csv\
+ task2data/df_maxradius8.csv\
+ task2data/df_maxradius9.csv\
+ task2data/df_maxradius10.csv: derived_data2.R
 	Rscript derived_data2.R
-	
-task2figures/pred_clstr_cnts2.png: 
-	Rscript cluster_kmeans.R
+
+# figures
+task2figures/pred_clstr_cnts2.png: cluster_spectral.R
+	Rscript cluster_spectral.R
