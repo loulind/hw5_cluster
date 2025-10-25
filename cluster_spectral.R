@@ -39,16 +39,47 @@ spectral <- function(x, k, d_threshold = 1.0) {
 # Finding number of clusters with clusGap
 gap_stats_df <- data.frame()  # initializes df to hold gap stats
 for (i in seq_along(list_of_sphere_dfs)) {
-      gap_stat <- list_of_sphere_dfs[[i]] |>
+    gap_stat <- list_of_sphere_dfs[[i]] |>
       select(-shell) |>
       as.matrix() |>
       clusGap(FUNcluster = function(x, k) spectral(x, k, d_threshold = 1), 
               K.max = 10,
-              B = 50)
+              B = 50)  # B=3 TOOK AN HOUR TO COMPUTE
     optimal_k <- maxSE(f = gap_stat$Tab[, "gap"],  # stores optimal cluster cnt
                        SE.f = gap_stat$Tab[, "SE.sim"])
     gap_stats_df <- c(i-1,optimal_k) |> rbind(gap_stats_df)
 }
 colnames(gap_stats_df) <- c("max_radius", "opt_clstr")
-gap_stats_df
+
+# ...........TEST...............
+list_of_sphere_dfs[[5]] |>
+  select(-shell) |>
+  as.matrix() |>
+  clusGap(FUNcluster = function(x, k) spectral(x, k, d_threshold = 1), 
+          K.max = 10,
+          B = 50)  # B=3 TOOK AN HOUR TO COMPUTE
+# ...........TEST...............
+
 # Visualize predicted clusters as a function of max_radius
+ggplot(gap_stats_df, aes(x = max_radius, y = opt_clstr)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  geom_hline(yintercept = 4, linetype = "dashed", color = "red", linewidth = 1) +
+  scale_x_continuous(
+    breaks = seq(10, 0, by = -1),
+    limits = c(10, 0)
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, max(gap_stats_df$opt_clstr, na.rm = TRUE) + 1, by = 1),
+    limits = c(1,6)
+  ) +
+  labs(
+    title = "Spectral Clustering Performance on Concentric Shells",
+    subtitle = "Predicted number of clusters vs. maximum shell radius",
+    x = "Maximum Radius",
+    y = "Predicted Number of Clusters"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.minor.y = element_blank()  # removes minor y grid lines
+  )
