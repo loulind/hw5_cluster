@@ -19,7 +19,8 @@ spectral <- function(x, k, d_threshold = 1.0) {
   A[D < d_threshold] <- 1  # Aij=1 if dist(i,j) is less than the threshold
   
   # 2. Computing graph Laplacian
-  D <- diag(rowSums(A))  # diag mtx with entries = number edges connected to a vertex
+  degrees <- rowSums(A) # number edges connected to a vertex
+  D <- diag(degrees)  # degree matrix
   D_inv_sqrt <- diag(1 / sqrt(degrees))  # inverse of sqrt of matrix
   L <- D - A  # unnormalized Laplacian
   L_sym <- D_inv_sqrt %*% L %*% D_inv_sqrt  # normalized
@@ -31,19 +32,23 @@ spectral <- function(x, k, d_threshold = 1.0) {
   
   # 4. Cluster Eigenvecs
   km <- kmeans(eig_vecs, centers = k, nstart = 10)  # final cluster assignment
+  
+  return(list(cluster = km$cluster))  # outputing in a form that clusGap wants
 }
 
 # Finding number of clusters with clusGap
 gap_stats_df <- data.frame()  # initializes df to hold gap stats
-for (df_i in list_of_sphere_dfs) {
-    gap_stat <- df_i |>
+for (i in seq_along(list_of_sphere_dfs)) {
+      gap_stat <- list_of_sphere_dfs[[i]] |>
       select(-shell) |>
       as.matrix() |>
-      clusGap(FUNcluster = spectral, K.max = 10, nstart = 20)
+      clusGap(FUNcluster = function(x, k) spectral(x, k, d_threshold = 1), 
+              K.max = 10,
+              B = 50)
     optimal_k <- maxSE(f = gap_stat$Tab[, "gap"],  # stores optimal cluster cnt
                        SE.f = gap_stat$Tab[, "SE.sim"])
-    gap_stats_df <- c(i+1,j,optimal_k) |> rbind(gap_stats_df)
+    gap_stats_df <- c(i-1,optimal_k) |> rbind(gap_stats_df)
 }
 colnames(gap_stats_df) <- c("max_radius", "opt_clstr")
-
+gap_stats_df
 # Visualize predicted clusters as a function of max_radius
