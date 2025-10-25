@@ -47,7 +47,7 @@ scatter_3d <- plot_ly(
 )
 scatter_3d
 
-# Output data
+# Export Data
 for (i in seq_along(list_of_sphere_dfs)){
   full_path <- paste0("~/work/task2data/", 
                      names(list_of_sphere_dfs)[i], 
