@@ -1,4 +1,5 @@
 # This script conducts spectral clustering on the TASK 2 data
+# Note: I had to separate the Laplacian step from kmeans bc it took too long
 library(tidyverse)
 library(cluster)
 
@@ -10,8 +11,8 @@ for (i in 0:10){
   names(list_of_sphere_dfs)[i+1] <- paste0("df_maxradius", i)
 }
 
-# Transformation wrapper function
-spectral <- function(x, k, d_threshold = 1.0) {
+# Transforming data first because laplacian step takes wayyyy too long
+graph_laplacian <- function(x, d_threshold = 1.0) {
   # 1. Adjacency matrix
   n <- nrow(x)
   A <- matrix(0, n, n)  # nxn zero matrix
@@ -27,59 +28,43 @@ spectral <- function(x, k, d_threshold = 1.0) {
   
   # 3. Eigen-decomp
   eig <- eigen(L_sym, symmetric = TRUE)
-  idx <- order(eig$values)  # order by decreasing eigenvalue
-  eig_vecs <- eig$vectors[, idx[1:k]]  # gives eigvecs corresp to k smallest eigvals
-  
-  # 4. Cluster Eigenvecs
-  km <- kmeans(eig_vecs, centers = k, nstart = 10)  # final cluster assignment
-  
-  return(list(cluster = km$cluster))  # outputing in a form that clusGap wants
+  idx <- order(eig$values)
+  eig_vecs <- eig$vectors[, idx]
+  return(eig_vecs)
+}
+
+transformed_dfs <- list()
+for (i in seq_along(list_of_sphere_dfs)) {
+  eig_vecs <- list_of_sphere_dfs[[i]] |>
+    select(-shell) |>
+    as.matrix() |>
+    graph_laplacian()
+  transformed_dfs[[i]] <- eig_vecs[, 1:10]  # keep only first 10 eigenvectors
+}
+
+# Rest of the spectral clustering fn to feed into clusGap
+spectral <- function(x, k) {
+  eig_vecs <- x[, 1:k]  # take first k smallest eigenvectors
+  km <- kmeans(eig_vecs, centers = k, nstart = 20)
+  return(list(cluster = km$cluster))
 }
 
 # Finding number of clusters with clusGap
-gap_stats_df <- data.frame()  # initializes df to hold gap stats
-for (i in seq_along(list_of_sphere_dfs)) {
-    gap_stat <- list_of_sphere_dfs[[i]] |>
-      select(-shell) |>
-      as.matrix() |>
-      clusGap(FUNcluster = function(x, k) spectral(x, k, d_threshold = 1), 
-              K.max = 10,
-              B = 50)  # B=3 TOOK AN HOUR TO COMPUTE
-    optimal_k <- maxSE(f = gap_stat$Tab[, "gap"],  # stores optimal cluster cnt
-                       SE.f = gap_stat$Tab[, "SE.sim"])
-    gap_stats_df <- c(i-1,optimal_k) |> rbind(gap_stats_df)
-}
-colnames(gap_stats_df) <- c("max_radius", "opt_clstr")
+gap_stats_df <- data.frame()
 
-# ...........TEST...............
-list_of_sphere_dfs[[5]] |>
-  select(-shell) |>
-  as.matrix() |>
-  clusGap(FUNcluster = function(x, k) spectral(x, k, d_threshold = 1), 
-          K.max = 10,
-          B = 50)  # B=3 TOOK AN HOUR TO COMPUTE
-# ...........TEST...............
+for (i in seq_along(transformed_dfs)) {
+  gap_stat <- clusGap(
+    transformed_dfs[[i]],
+    FUNcluster = function(x, k) spectral(x, k),
+    K.max = 4,
+    B = 50
+  )
+  
+  optimal_k <- maxSE(f = gap_stat$Tab[, "gap"], SE.f = gap_stat$Tab[, "SE.sim"])
+  
+  gap_stats_df <- rbind(gap_stats_df, data.frame(max_radius = i - 1, 
+                                                 opt_clstr = optimal_k)
+  )
+}
 
 # Visualize predicted clusters as a function of max_radius
-ggplot(gap_stats_df, aes(x = max_radius, y = opt_clstr)) +
-  geom_line(size = 1) +
-  geom_point(size = 2) +
-  geom_hline(yintercept = 4, linetype = "dashed", color = "red", linewidth = 1) +
-  scale_x_continuous(
-    breaks = seq(10, 0, by = -1),
-    limits = c(10, 0)
-  ) +
-  scale_y_continuous(
-    breaks = seq(0, max(gap_stats_df$opt_clstr, na.rm = TRUE) + 1, by = 1),
-    limits = c(1,6)
-  ) +
-  labs(
-    title = "Spectral Clustering Performance on Concentric Shells",
-    subtitle = "Predicted number of clusters vs. maximum shell radius",
-    x = "Maximum Radius",
-    y = "Predicted Number of Clusters"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    panel.grid.minor.y = element_blank()  # removes minor y grid lines
-  )
