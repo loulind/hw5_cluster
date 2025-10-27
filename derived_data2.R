@@ -6,7 +6,7 @@ generate_shell_clusters <- function(n_shells, k_per_shell,
                                     max_radius, noise_sd = 0.1) {
   df_spherical <- data.frame()
   for (i in 1:n_shells) {
-    k <- k_per_shell*(i^2) # increases number of points per shell
+    k <- k_per_shell #*max(1, (i*(max_radius %/% n_shells)^2)) # increases number of points per shell
     for (j in 1:k)  { # df of random values in spherical coordinates
       obs <- c(i,  # shell number
                (i*(max_radius/n_shells) + rnorm(1, sd=noise_sd)), # fuzzy radii
@@ -52,5 +52,5 @@ for (i in seq_along(list_of_sphere_dfs)){
   full_path <- paste0("~/work/task2data/", 
                      names(list_of_sphere_dfs)[i], 
                      ".csv")
-  write.csv(list_of_sphere_dfs[[i]], file = full_path, row.names = F)
+  write.csv(list_of_sphere_dfs[[i]], file = full_path, row.names = FALSE)
 }
