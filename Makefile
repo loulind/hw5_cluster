@@ -2,9 +2,7 @@
 .PHONY: all clean
 
 # Generates all artefacts after cleaning
-all:\
- task1figures/pred_clstr_cnts.png
- task2figures/pred_clstr_cnts2.png
+all: task1figures/pred_clstr_cnts.png task2figures/pred_clstr_cnts2.png
 
 # Removes artefacts from project file output directories
 clean: 
