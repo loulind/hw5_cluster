@@ -24,8 +24,8 @@ for (i in 2:6) {
 }
 
 # Export the data frame to CSV
-write.csv(df_n2, "~/work/task1data/df_n2", row.names = FALSE)
-write.csv(df_n3, "~/work/task1data/df_n3", row.names = FALSE)
-write.csv(df_n4, "~/work/task1data/df_n4", row.names = FALSE)
-write.csv(df_n5, "~/work/task1data/df_n5", row.names = FALSE)
-write.csv(df_n6, "~/work/task1data/df_n6", row.names = FALSE)
+write.csv(df_n2, "~/work/task1data/df_n2.csv", row.names = FALSE)
+write.csv(df_n3, "~/work/task1data/df_n3.csv", row.names = FALSE)
+write.csv(df_n4, "~/work/task1data/df_n4.csv", row.names = FALSE)
+write.csv(df_n5, "~/work/task1data/df_n5.csv", row.names = FALSE)
+write.csv(df_n6, "~/work/task1data/df_n6.csv", row.names = FALSE)
