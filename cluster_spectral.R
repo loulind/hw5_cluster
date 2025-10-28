@@ -45,7 +45,7 @@ for (i in seq_along(list_of_sphere_dfs)) {
 # Rest of the spectral clustering fn to feed into clusGap
 spectral <- function(x, k) {
   eig_vecs <- x[, 1:k]  # take first k smallest eigenvectors
-  km <- kmeans(eig_vecs, centers = k, nstart = 20)
+  km <- kmeans(eig_vecs, centers = k, nstart = 10)
   return(list(cluster = km$cluster))
 }
 
@@ -56,7 +56,7 @@ for (i in seq_along(transformed_dfs)) {
   gap_stat <- clusGap(
     transformed_dfs[[i]],
     FUNcluster = function(x, k) spectral(x, k),
-    K.max = 10,
+    K.max = 20,
     B = 100
   )
   
