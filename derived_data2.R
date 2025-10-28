@@ -6,8 +6,7 @@ generate_shell_clusters <- function(n_shells, k_per_shell,
                                     max_radius, noise_sd = 0.1) {
   df_spherical <- data.frame()
   for (i in 1:n_shells) {
-    k <- k_per_shell #*max(1, (i*(max_radius %/% n_shells)^2)) # increases number of points per shell
-    for (j in 1:k)  { # df of random values in spherical coordinates
+    for (j in 1:k_per_shell)  { # df of random values in spherical coordinates
       obs <- c(i,  # shell number
                (i*(max_radius/n_shells) + rnorm(1, sd=noise_sd)), # fuzzy radii
                2*pi*runif(1),  # uniformly distributed theta
