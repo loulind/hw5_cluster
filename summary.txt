@@ -1,5 +1,4 @@
 ***TASK 1*** See ~/work/task1figures/pred_clstr_cnts.png
-
 Here are the side lengths for which clusGap is consistently unable to 
 distinguish clusters...
 
@@ -14,3 +13,17 @@ as side_length increases
 
 
 ***TASK 2*** 
+The algorithm did not appear to converge reliably on the true number of 
+clusters. I suspect this may be due to the 100 points being thinner in the outer
+shells compared to the inner shells, so the algorithm picked up on extraneous
+groupings of data. I tried to scale the number of points per shell by a factor 
+of the shell's squared radius, but my computer crashed when attempting to do so 
+(even after I changed the code to store the transformed data so that it was
+quicker inside clusGap). I presume that if the shells were more evenly 
+distributed, then the algorithm would fail around lower values of max_radius, 
+with max_radius==0 resulting in 1 predicted cluster. 
+
+If I were to use a smaller d_threshold, I believe this would lead to a greater
+predicted number of clusters as the algorithm picks up on more random groupings 
+in my outer shells. If I increased it, I believe this would decrease the 
+predicted number of clusters, especially around lower max_radius values.
