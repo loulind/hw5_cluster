@@ -81,7 +81,8 @@ pred_clstr_cnts2 <- ggplot(gap_stats_df, aes(x = max_radius, y = opt_clstr)) +
   ) +
   scale_x_continuous(
     breaks = gap_stats_df$max_radius,
-    minor_breaks = NULL
+    minor_breaks = NULL,
+    trans = "reverse"  
   ) +
   scale_y_continuous(
     breaks = 1:10,
@@ -98,7 +99,7 @@ pred_clstr_cnts2 <- ggplot(gap_stats_df, aes(x = max_radius, y = opt_clstr)) +
     plot.title = element_text(face = "bold", hjust = 0.5),
     axis.title = element_text(face = "bold"),
     legend.position = "top",
-    panel.grid.minor = element_blank(),  # ensures no minor grid lines
+    panel.grid.minor = element_blank(), 
     panel.grid.major.x = element_line(linewidth = 0.4, color = "gray80"),
     panel.grid.major.y = element_line(linewidth = 0.4, color = "gray80")
   )
